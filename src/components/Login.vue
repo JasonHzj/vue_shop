@@ -12,6 +12,7 @@
         :rules="loginFormRules"
         :model="loginForm"
         label-width="0px"
+        @submit.native.prevent
       >
         <el-form-item prop="username">
           <el-input
@@ -24,10 +25,11 @@
             v-model="loginForm.password"
             prefix-icon="iconfont icon-3702mima"
             type="password"
+            @keyup.enter.native="login"
           ></el-input>
         </el-form-item>
         <el-form-item class="btns">
-          <el-button type="primary" @click="login">登入</el-button>
+          <el-button type="primary" @keyup.enter="login">登入</el-button>
           <el-button type="info" @click="resetLoginForm">重置</el-button>
         </el-form-item>
       </el-form>
@@ -58,21 +60,25 @@ export default {
   methods: {
     // 点击重置按钮
     resetLoginForm () {
-      this.$refs.loginFormRef.resetFields()
+      this.$refs.loginFormRef.resetFields()// 点击重置按钮调用 组件 resetFields()方法
     },
     login () {
+      // 点击登录的时候先调用validate方法验证表单内容是否有误
       this.$refs.loginFormRef.validate(async valid => {
         console.log(valid)
+        // 如果valid参数为true则验证通过
         if (!valid) return
+        // 发送请求进行登录
         const { data: res } = await this.$http.post('login', this.loginForm)
         if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
         this.$message.success(res.meta.msg)
+        // 保存token
         window.sessionStorage.setItem('token', res.data.token)
+        // 跳转主页面
         this.$router.push('/home')
       })
     }
   }
-
 }
 </script>
 
