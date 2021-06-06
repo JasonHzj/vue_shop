@@ -10,6 +10,11 @@ import './assets/global.css'
 import axios from 'axios'
 // 配置请求根路径
 axios.defaults.baseURL = 'http://itcgq.com:8888/api/private/v1/'
+// 拦截请求 验证浏览器是否包含token
+axios.interceptors.request.use(config => {
+  config.headers.Authorization = window.sessionStorage.getItem('token')
+  return config
+})
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
