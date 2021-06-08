@@ -1,7 +1,9 @@
 body,
-html {
+html,
+#app {
   font: normal 14px Microsoft YaHei;
   height: 100%;
+  min-width: 1366px;
 }
 
 .mui-bar {
