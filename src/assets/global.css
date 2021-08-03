@@ -26,11 +26,11 @@ table {
   margin: 0;
   padding: 0;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  -webkit-text-size-adjust: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  outline: none;
+  -webkit-text-size-adjust: text;
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  outline: text;
 }
 
 img {
@@ -95,4 +95,24 @@ ol {
 
 .el-pagination {
   margin-top: 15px;
+}
+.mb20 {
+  margin-bottom: 20px;
+}
+.mb10 {
+  margin-bottom: 10px;
+}
+.mb40 {
+  margin-bottom: 40px;
+}
+.mt64 {
+  margin-top: 64px;
+}
+.mt104 {
+  margin-top: 104px;
+}
+
+.el-date-editor .el-range-separator {
+  padding: 0 !important;
+  margin: 0 5px !important;
 }

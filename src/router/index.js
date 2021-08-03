@@ -4,9 +4,13 @@ import Login from '../components/Login.vue'
 import Home from '../components/home.vue'
 import Welcome from '../components/welcome.vue'
 import Users from '../components/user/Users.vue'
-import Rights from '../components/power/Rights.vue'
-import Roles from '../components/power/Roles.vue'
-
+import hpold from '../components/hp/hpold.vue'
+import zba from '../components/hp/zba.vue'
+import Roles from '../components/mk/Roles.vue'
+import params from '../components/mk/params.vue'
+import lpold from '../components/LP/lpold.vue'
+import lpph from '../components/LP/lpph.vue'
+import reports from '../components/hd/reports.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -19,8 +23,13 @@ const routes = [
     children: [
       { path: '/welcome', component: Welcome },
       { path: '/users', component: Users },
-      { path: '/rights', component: Rights },
-      { path: '/roles', component: Roles }
+      { path: '/roles', component: Roles },
+      { path: '/hpold', component: hpold },
+      { path: '/lpold', component: lpold },
+      { path: '/zba', component: zba },
+      { path: '/params', component: params },
+      { path: '/lpph', component: lpph },
+      { path: '/reports', component: reports }
     ]
   }
 ]

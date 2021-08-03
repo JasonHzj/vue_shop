@@ -14,7 +14,7 @@
     </div>
     <el-header>
       <div>
-        <span>Victoria's Secret 后台管理系统</span>
+        <span><a class="colsw" href="/#/welcome">Victoria's Secret</a></span>
       </div>
       <el-button type="info" @click="loginOut">退出</el-button>
     </el-header>
@@ -58,57 +58,160 @@
       >
       <!-- 右边主体 -->
       <el-main>
-        <router-view></router-view>
+        <div class="logpadding" style="margin:20px">
+        <router-view></router-view></div>
+        <el-footer class="footer">2021 © Copyright - v1.0</el-footer>
       </el-main>
+     
     </el-container>
+     
   </el-container>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
-      menulist: [],
+      menulist: [
+        {
+          id: 125,
+          authName: '数据源管理',
+          path: 'users',
+          children: [
+            {
+              id: 110,
+              authName: '采集数据',
+              path: 'users',
+              children: [],
+              order: null,
+            },
+          ],
+          order: 1,
+        },
+        {
+          id: 103,
+          authName: 'HP数据',
+          path: 'rights',
+          children: [
+           
+            {
+              id: 923,
+              authName: '首页总体数据',
+              path: 'hpold',
+              children: [],
+              order: null,
+            },
+            {
+              id: 924,
+              authName: 'HP数据细分',
+              path: 'zba',
+              children: [],
+              order: null,
+            },
+          ],
+          order: 3,
+        },
+        {
+          id: 101,
+          authName: '模块数据',
+          path: 'roles',
+          children: [
+            {
+              id: 104,
+              authName: '模块数据对比',
+              path: 'roles',
+              children: [],
+              order: 1,
+            },
+            {
+              id: 115,
+              authName: '模块点击率',
+              path: 'params',
+              children: [],
+              order: 2,
+            },
+          ],
+          order: 3,
+        },
+        {
+          id: 102,
+          authName: 'LP数据',
+          path: 'lpold',
+          children: [
+            {
+              id: 107,
+              authName: '点击次数',
+              path: 'lpold',
+              children: [],
+              order: null,
+            },{
+              id: 165,
+              authName: '页面排行',
+              path: 'lpph',
+              children: [],
+              order: null,
+            },
+          ],
+          order: 4,
+        },
+        {
+          id: 145,
+          authName: '活动统计',
+          path: 'reports',
+          children: [
+            {
+              id: 146,
+              authName: '添加活动',
+              path: 'reports',
+              children: [],
+              order: null,
+            },
+          ],
+          order: 5,
+        },
+      ],
       iconObj: {
         125: 'iconfont icon-user',
         103: 'iconfont icon-tijikongjian',
         101: 'iconfont icon-shangpin',
         102: 'iconfont icon-danju',
-        145: 'iconfont icon-baobiao'
+        145: 'iconfont icon-baobiao',
       },
       iscollapse: false,
       menuClick: '',
       menuClickJt: 'el-icon-arrow-left',
-      activePath: ''
+      activePath: '',
     }
   },
-  created () {
-    this.getMenuList()
+  created() {
+    // this.getMenuList()
     this.activePath = window.sessionStorage.getItem('activePath')
   },
   methods: {
-    loginOut () {
+    loginOut() {
       window.sessionStorage.clear()
       this.$router.push('/login')
     },
-    async getMenuList () {
-      const { data: res } = await this.$http.get('menus')
-      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
-      this.menulist = res.data
-      console.log(res)
-    },
-    toggleCollapse () {
+    // async getMenuList() {
+    //   const { data: res } = await this.$http.get('menus')
+    //   if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+    //   this.menulist = res.data
+    //   console.log(res)
+    // },
+    toggleCollapse() {
       // 隐藏显示侧边栏
       this.iscollapse = !this.iscollapse
       this.menuClick = this.iscollapse ? 'product-left' : 'product-right'
-      this.menuClickJt = this.iscollapse ? 'el-icon-arrow-right' : 'el-icon-arrow-left'
+      this.menuClickJt = this.iscollapse
+        ? 'el-icon-arrow-right'
+        : 'el-icon-arrow-left'
     },
-    saveNavState (activePath) {
+    saveNavState(activePath) {
       // 保存链接的激活的状态
       window.sessionStorage.setItem('activePath', activePath)
       this.activePath = activePath
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -134,6 +237,7 @@ export default {
 }
 .el-main {
   background-color: #eaedf1;
+  padding:0;
 }
 .iconfont {
   margin-right: 10px;
@@ -186,4 +290,21 @@ export default {
 .product-right {
   left: 200px;
 }
+.el-icon-arrow-right{
+  top: 24px !important;
+}
+.el-icon-arrow-left{
+  top: 24px !important;
+}
+.colsw{color:#ffffff;}
+.footer {
+   
+    color: #98a6ad;
+    text-align: center;
+    line-height: 26px;
+    width: 100%;
+    display: block;
+    height: 26px !important;
+ 
+  }
 </style>
