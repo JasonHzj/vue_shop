@@ -55,7 +55,11 @@ export default {
           }
         });
       }
-      var giveInterestPrice = this.chartData.datalist[0].data
+      var giveInterestPrice = []
+      this.chartData.datalist.forEach(resus => {
+        giveInterestPrice.push(resus.data) 
+      })
+      //console.log(giveInterestPrice);
       // 绘制图表
       var option = {
         title: {
@@ -189,7 +193,16 @@ export default {
             interval:0,
             rotate: 0,
             formatter(value, index) {
-              return `{table|${value}}\n{table|${giveInterestPrice[index]}%}`;
+              if(giveInterestPrice.length == 1){
+         return `{table|${value}}\n{table|${giveInterestPrice[0][index]}%}`;
+              }else if(giveInterestPrice.length == 2){
+            return `{table|${value}}\n{table|${giveInterestPrice[0][index]}%}\n{table|${giveInterestPrice[1][index]}%}`;
+              }else if(giveInterestPrice.length == 3){
+            return `{table|${value}}\n{table|${giveInterestPrice[0][index]}%}\n{table|${giveInterestPrice[1][index]}%}\n{table|${giveInterestPrice[2][index]}%}`;
+              }else{
+                return `{table|${value}}\n{table|${giveInterestPrice[0][index]}%}`;
+              }
+              
             },
             rich: {
               table: {
@@ -239,7 +252,7 @@ export default {
   watch: {
     chartData: {
       handler (newVal, oldVal) {
-        //console.log("更新数据")
+        ////console.log("更新数据")
         this.drawChart()
       },
       deep: true

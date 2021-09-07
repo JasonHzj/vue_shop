@@ -84,7 +84,6 @@ export default {
         timeZone: 'UTC',
         firstDay: '1',
         weekNumberCalculation: 'ISO',
-        initialDate: '2021-08-03',
         isRTL: true,
         height: 850,
         endParam: 'end',
@@ -224,7 +223,7 @@ export default {
   methods: {
     async getEventsList() {
       const { data: res } = await this.$http.get(
-        'http://127.0.0.1:3007/ymlist/hddate'
+        'https://shop.123hzj.com/ymlist/hddate'
       )
       if (res.status !== 0) return this.$message.error(res.message)
 
@@ -240,7 +239,7 @@ export default {
       })
     },
     handleDateClick(arg) {
-      //console.log(arg.date);
+      ////console.log(arg.date);
       this.dialogFormVisible = true
       this.optTitle = '新增活动'
       ;(this.form.title = ''), (this.form.id = ''), (this.form.start = arg.date)
@@ -272,7 +271,7 @@ export default {
       if (this.form.id === undefined || this.form.id == '') {
         //新增
         const { data: res } = await this.$http.post(
-          'http://127.0.0.1:3007/ymlist/hdadd',
+          'https://shop.123hzj.com/ymlist/hdadd',
           hditem
         )
         if (res.status !== 0) return this.$message.error(res.message)
@@ -281,10 +280,12 @@ export default {
           message: '新增成功！',
           type: 'success',
         })
+            this.calendarOptions.events = []
+      this.getEventsList()
       } else {
         //修改
         const { data: res } = await this.$http.post(
-          'http://127.0.0.1:3007/ymlist/hdup',
+          'https://shop.123hzj.com/ymlist/hdup',
           hditem
         )
         if (res.status !== 0) return this.$message.error(res.message)
@@ -314,7 +315,7 @@ export default {
     //删除事件
     async delEvent() {
       const { data: res } = await this.$http.post(
-        'http://127.0.0.1:3007/ymlist/hddle',
+        'https://shop.123hzj.com/ymlist/hddle',
         { id: this.form.id }
       )
       if (res.status !== 0) return this.$message.error(res.message)
@@ -437,4 +438,5 @@ footer {
     top: 10.2%; z-index: 99999;color:#555555}
 .yuanname ul li{ float: left;margin: 0 5px;}
 .yuanname ul li span{ width: 10px; height: 10px; display:inline-block; border-radius: 100px; margin:0 3px; }
+
 </style>

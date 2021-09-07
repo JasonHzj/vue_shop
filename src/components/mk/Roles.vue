@@ -48,6 +48,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :picker-options="pickerOptions"
+            @change="dispsrsChange"
           ></el-date-picker>
         </el-col>
 
@@ -126,7 +127,7 @@ export default {
     return {
       renqunList:["默认首页"],
       renqunName:[],
-      checkList: ['吸顶', 'KV轮播弹窗', '优惠券'],
+      checkList: ['吸顶', 'KV轮播', '优惠券'],
       pickerOptions: {
         shortcuts: [
           {
@@ -200,7 +201,7 @@ export default {
       const start = new Date()
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
       this.value2 = [start, end]
-      console.log(this.value2);
+      //console.log(this.value2);
     },
       async ymtitlerq () {
         const timeStar = this.$moment(this.value2[0]).format('YYYY-MM-DD')
@@ -303,6 +304,7 @@ export default {
     async handleCheckedCitiesChange (value) {
       //监听check变化
       //点击率
+      if(value != 0 && this.renqunList.length != 0){
       const lineclickRate = this.$refs.lineclickRate.$vnode.data
       this.getSmallData(value,this.renqunList, lineclickRate).then(res => {
         this.ClickRate = res
@@ -322,9 +324,14 @@ export default {
       this.getSmallData(value,this.renqunList, lineclickUv).then(res => {
         this.clickUv = res
       })
+        }else{
+       return this.$message.error("请选择模块与人群")
+    }
     },
     async handleCheckednameChange (value) {
-      this.getListName()
+      
+      if(value != 0){
+        this.getListName()
         const lineclickRate = this.$refs.lineclickRate.$vnode.data
       this.getSmallData(this.checkList,value, lineclickRate).then(res => {
         this.ClickRate = res
@@ -344,7 +351,27 @@ export default {
       this.getSmallData(this.checkList,value, lineclickUv).then(res => {
         this.clickUv = res
       })
+}else{
+       return this.$message.error("请选择人群")
+    }
 
+
+    },
+    dispsrsChange(){
+       this.checkList = []
+       this.renqunName = []
+     const res =  this.getListName()
+      res.then(result => {
+        result.forEach(item => {
+          this.checkList.push(item.name)
+        });
+      })
+    const ase = this.ymtitlerq()
+        ase.then(result => {
+        result.forEach(item => {
+          this.renqunName.push(item.name)
+        });
+      })
 
 
     }

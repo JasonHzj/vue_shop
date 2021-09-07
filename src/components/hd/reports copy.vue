@@ -147,14 +147,14 @@ export default {
             });
         },
         handleDateClick(arg) {
-            //console.log(arg.date);
+            ////console.log(arg.date);
             this.dialogFormVisible = true;
             this.optTitle = '新增事件';
             this.form.title = '',
             this.form.id = '',
             this.form.start = arg.date;
             this.form.end = arg.date;
-            //console.log(this.calendarEvents);
+            ////console.log(this.calendarEvents);
         },
         handleEventClick(info) {
             info.el.style.borderColor = 'red';

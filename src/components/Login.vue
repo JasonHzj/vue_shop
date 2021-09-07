@@ -92,7 +92,7 @@ export default {
     login () {
       // 点击登录的时候先调用validate方法验证表单内容是否有误
       this.$refs.loginFormRef.validate(async valid => {
-        console.log(valid)
+        //console.log(valid)
         // 如果valid参数为true则验证通过
         if (!valid) return
         // 发送请求进行登录

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      style="width: 100%; height: 335px"
+      style="width: 100%; height: 550px"
       :id="echarts"
       class="echarts"
       ref="echarts"

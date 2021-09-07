@@ -8,8 +8,11 @@
     </el-breadcrumb>
     <!-- 卡片视图区域 -->
     <el-card>
-      <el-row :gutter="20">
-        <el-col :span="6">
+      <el-row :gutter="24">
+         <el-col :span="2">
+          <el-button type="warning" @click="gxData">更新数据</el-button>
+        </el-col>
+        <el-col :span="6" :offset="14">
           <!-- 搜索与添加 -->
           <el-date-picker
             v-model="value2"
@@ -21,9 +24,10 @@
             :picker-options="pickerOptions"
           ></el-date-picker>
         </el-col>
-        <el-col :span="3">
+        <el-col :span="2" >
           <el-button type="primary" @click="yzData">开始采集</el-button>
         </el-col>
+        
       </el-row>
       <el-row :gutter="20" v-bind:class="{ selected: Members }">
         <el-col :span="6">
@@ -153,9 +157,29 @@ export default {
     this.getLpData()
   },
   methods: {
+   async gxData(){
+       const ends = new Date()
+       ends.setTime(ends.getTime() - 3600 * 1000 * 24)
+      const end = this.$moment(ends).format('YYYY-MM-DD')
+
+        const { data: res } = await this.$http.get(
+        'https://shop.123hzj.com/ymlist/gxsj'
+      )
+      if (res.status !== 0) return this.$message.error(res.message)
+        const star = this.$moment(res.data[0].date).format('YYYY-MM-DD')
+        var sssde = this.$moment(res.data[0].date).valueOf() + 3600 * 1000 * 24
+        const starS = this.$moment(sssde).format('YYYY-MM-DD')
+        this.value2 = [starS,end]
+      if(end == star)  {
+        this.gxstrs()
+        this.value2 = [star,end]
+      }else{
+       this.getListDate()
+      }
+    },
     async getLpData() {
       const { data: lpList } = await this.$http.get(
-        'apic/bda/decorate/wl/config/listAllShopPages.json'
+        'https://sycm.taobao.com/bda/decorate/wl/config/listAllShopPages.json'
       )
       if (lpList.code !== 0) return this.$message.error('获取数据失败')
       lpList.data.list.forEach((resname) => {
@@ -195,7 +219,7 @@ export default {
       const timeStar = this.$moment(this.value2[0]).format('YYYY-MM-DD')
       const timeEnd = this.$moment(this.value2[1]).format('YYYY-MM-DD')
       this.timeS = this.timeS.concat(this.getdiffdate(timeStar, timeEnd))
-      console.log(this.timeS)
+      //console.log(this.timeS)
       this.Members = false
 
       var qdsumData = []
@@ -204,12 +228,12 @@ export default {
        if (this.LpDataList[r].pageType == 'shop/index2') {
       for (var a = 0; a < this.timeS.length; a++) {
         const { data: res } = await this.$http.get(
-          `apis/minidata/shop/index/sycm.htm?pathInfo=shop/index2&userId=3265150369&shopId=288498688&pageId=${this.LpDataList[r].pageId}&recodeDate=${this.timeS[a]}`
+          `https://alisite.m.taobao.com/minidata/shop/index/sycm.htm?pathInfo=shop/index2&userId=3265150369&shopId=288498688&pageId=${this.LpDataList[r].pageId}&recodeDate=${this.timeS[a]}`
         )
         if (res.status !== 0) return this.$message.error('获取信息失败')
     
         const { data: resa } = await this.$http.get(
-          `apic/flow/v2/decorate/wl/getPageDetailData.json?appType=20&dateRange=${this.timeS[a]}%7C${this.timeS[a]}&dateType=day&pageId=${this.LpDataList[r].pageId}&pageType=shop%2Findex2&spmb=shop%2Findex2_3265150369_${this.LpDataList[r].pageId}&pageType=shop%2Findex2&spmb=shop%2Findex2_3265150369_${this.LpDataList[r].pageId}&type=all`
+          `https://sycm.taobao.com/flow/v2/decorate/wl/getPageDetailData.json?appType=20&dateRange=${this.timeS[a]}%7C${this.timeS[a]}&dateType=day&pageId=${this.LpDataList[r].pageId}&pageType=shop%2Findex2&spmb=shop%2Findex2_3265150369_${this.LpDataList[r].pageId}&pageType=shop%2Findex2&spmb=shop%2Findex2_3265150369_${this.LpDataList[r].pageId}&type=all`
         )
 
         if (resa.code !== 0){
@@ -273,12 +297,12 @@ export default {
  //全店数据采集
  for (var t = 0; t < this.timeS.length; t++) {
         const { data: qduv } = await this.$http.get(
-          `apic/portal/diagnose/index/trend.json?dateType=recent1&dateRange=${this.timeS[t]}%7C${this.timeS[t]}&indexCode=uv`
+          `https://sycm.taobao.com/portal/diagnose/index/trend.json?dateType=recent1&dateRange=${this.timeS[t]}%7C${this.timeS[t]}&indexCode=uv`
         )
         if (qduv.content.code !== 0) return this.$message.error('获取信息失败')
 
         const { data: qdres } = await this.$http.get(
-          `apic/portal/diagnose/index/trend.json?dateType=recent1&dateRange=${this.timeS[t]}%7C${this.timeS[t]}&indexCode=payAmt`
+          `https://sycm.taobao.com/portal/diagnose/index/trend.json?dateType=recent1&dateRange=${this.timeS[t]}%7C${this.timeS[t]}&indexCode=payAmt`
         )
         if (qdres.content.code !== 0) return this.$message.error('获取信息失败')
         var uva = qduv.content.data.uv
@@ -306,20 +330,20 @@ export default {
       for (var q = 0; q < this.LpDataList.length; q++) {
         if (this.LpDataList[q].pageType == 'shop/index2') {
             const { data: hpDataSmall } = await this.$http.get(
-            `apic/bda/decorate/wl/getGeneralTrend.json?appType=20&endDate=${timeEnd}&spmb=${this.LpDataList[q].spmb}&startDate=${timeStar}`
+            `https://sycm.taobao.com/bda/decorate/wl/getGeneralTrend.json?appType=20&endDate=${timeEnd}&spmb=${this.LpDataList[q].spmb}&startDate=${timeStar}`
           )
           if (hpDataSmall.code !== 0) return this.$message.error('获取数据失败')
           this.postMdata(hpDataSmall, this.LpDataList[q].name, hpsumData)
          
         } else if(this.LpDataList[q].name == '定制页1624501436164'){
             const { data: LpDataSmall } = await this.$http.get(
-            `apic/bda/decorate/wl/getGeneralTrend.json?appType=20&endDate=${timeEnd}&spmb=${this.LpDataList[q].spmb}&startDate=${timeStar}`
+            `https://sycm.taobao.com/bda/decorate/wl/getGeneralTrend.json?appType=20&endDate=${timeEnd}&spmb=${this.LpDataList[q].spmb}&startDate=${timeStar}`
           )
           if (LpDataSmall.code !== 0) return this.$message.error('获取数据失败')
           this.postMdata(LpDataSmall, "宝贝分类页2107", lpsumData)
         } else {
          const { data: LpDataSmall } = await this.$http.get(
-            `apic/bda/decorate/wl/getGeneralTrend.json?appType=20&endDate=${timeEnd}&spmb=${this.LpDataList[q].spmb}&startDate=${timeStar}`
+            `https://sycm.taobao.com/bda/decorate/wl/getGeneralTrend.json?appType=20&endDate=${timeEnd}&spmb=${this.LpDataList[q].spmb}&startDate=${timeStar}`
           )
           if (LpDataSmall.code !== 0) return this.$message.error('获取数据失败')
           this.postMdata(LpDataSmall, this.LpDataList[q].name, lpsumData)
@@ -376,7 +400,7 @@ export default {
         this.percentageUp = Math.floor(
           e * (100 / this.syData.length) + 100 / this.syData.length
         )
-        if (this.percentageUp == 100) {
+        if (this.percentageUp == 100 || this.percentageUp == 99) {
           setTimeout(this.uPtext, 1000)
         }
       }
@@ -405,7 +429,7 @@ export default {
         return this.$message.error(resqd.message)
       }
 
-      if (this.percentageUp == 100) {
+      if (this.percentageUp == 100 || this.percentageUp == 99) {
         setTimeout(this.uPtext, 1000)
       }
     },
@@ -425,6 +449,14 @@ export default {
       this.$notify({
         title: '请重新选择日期',
         message: hues + '数据已存在，请重新采集',
+        type: 'warning',
+      })
+    },
+     gxstrs() {
+      this.uPdataText = '更新失败'
+      this.$notify({
+        title: '更新失败',
+        message:'当前已是最新数据，请勿重复更新',
         type: 'warning',
       })
     },

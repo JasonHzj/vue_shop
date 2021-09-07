@@ -11,6 +11,9 @@ import params from '../components/mk/params.vue'
 import lpold from '../components/LP/lpold.vue'
 import lpph from '../components/LP/lpph.vue'
 import reports from '../components/hd/reports.vue'
+import dailyData from '../components/tb/dailydata.vue'
+import dictionaryData from '../components/tb/dictionaryData.vue'
+import zbdate from '../components/hd/zbdate.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -29,7 +32,16 @@ const routes = [
       { path: '/zba', component: zba },
       { path: '/params', component: params },
       { path: '/lpph', component: lpph },
-      { path: '/reports', component: reports }
+      { path: '/reports', component: reports },
+      { path: '/dailydata', component: dailyData },
+      {
+        path: '/dictionaryData',
+        component: dictionaryData
+      },
+      {
+        path: '/zbdate',
+        component: zbdate
+      }
     ]
   }
 ]

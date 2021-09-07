@@ -162,7 +162,7 @@ export default {
         this.dateList = res.data.date
         this.lastName = res.data.lastName
         this.tableList = res.data.dataList
-         console.log(this.tableList);
+         //console.log(this.tableList);
       return res.data
     },
     async postDateUp() {

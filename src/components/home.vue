@@ -60,7 +60,7 @@
       <el-main>
         <div class="logpadding" style="margin:20px">
         <router-view></router-view></div>
-        <el-footer class="footer">2021 © Copyright - v1.0</el-footer>
+        <el-footer class="footer">2021 © Copyright - v1.8</el-footer>
       </el-main>
      
     </el-container>
@@ -155,6 +155,28 @@ export default {
           order: 4,
         },
         {
+          id: 175,
+          authName: '数据同比',
+          path: 'dailyData',
+          children: [
+            {
+              id: 176,
+              authName: '日常数据',
+              path: 'dailyData',
+              children: [],
+              order: null,
+            },
+            {
+              id: 178,
+              authName: '活动数据',
+              path: 'dictionaryData',
+              children: [],
+              order: null,
+            },
+          ],
+          order: 6,
+        },
+        {
           id: 145,
           authName: '活动统计',
           path: 'reports',
@@ -165,10 +187,17 @@ export default {
               path: 'reports',
               children: [],
               order: null,
+            }, {
+              id: 147,
+              authName: '数据源',
+              path: 'zbdate',
+              children: [],
+              order: null,
             },
           ],
           order: 5,
         },
+        
       ],
       iconObj: {
         125: 'iconfont icon-user',
@@ -176,6 +205,7 @@ export default {
         101: 'iconfont icon-shangpin',
         102: 'iconfont icon-danju',
         145: 'iconfont icon-baobiao',
+        175: 'iconfont icon-showpassword',
       },
       iscollapse: false,
       menuClick: '',
@@ -196,7 +226,7 @@ export default {
     //   const { data: res } = await this.$http.get('menus')
     //   if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
     //   this.menulist = res.data
-    //   console.log(res)
+    //   //console.log(res)
     // },
     toggleCollapse() {
       // 隐藏显示侧边栏

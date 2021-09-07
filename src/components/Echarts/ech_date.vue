@@ -186,7 +186,7 @@ export default {
   watch: {
     chartData: {
       handler (newVal, oldVal) {
-        //console.log("更新数据")
+        ////console.log("更新数据")
         this.drawChart()
       },
       deep: true

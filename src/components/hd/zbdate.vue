@@ -3,24 +3,33 @@
     <!-- 面包屑导航 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>数据分析</el-breadcrumb-item>
-      <el-breadcrumb-item>模块数据分析</el-breadcrumb-item>
+      <el-breadcrumb-item>LP数据</el-breadcrumb-item>
+      <el-breadcrumb-item>点击次数</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 卡片视图区域 -->
     <el-card class="mb20">
-      <el-row class="mb10">
+      <el-row class="mb10 boder-b-t">
         <el-col :span="24">
-          <el-checkbox-group
-            v-model="checkList"
-            @change="handleCheckedCitiesChange"
-          >
-            <el-checkbox
-              v-for="item in titleName"
+      <el-radio-group v-model="checkList"
+            @change="handleCheckedCitiesChange">
+    <el-radio v-for="item in titleName"
               :label="item.name"
               :key="item.traceId"
-              name="type"
-            ></el-checkbox>
-          </el-checkbox-group>
+              name="type"></el-radio>
+  </el-radio-group>
+       
+        </el-col>
+      </el-row>
+         <el-row class="mb10">
+        <el-col :span="24">
+      <el-radio-group v-model="checkListName"
+            @change="handleCheckedNameChange">
+    <el-radio v-for="item in titleNameSue"
+              :label="item.name"
+              :key="item.traceId"
+              name="type"></el-radio>
+  </el-radio-group>
+       
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -33,40 +42,79 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :picker-options="pickerOptions"
+            @change="handleSChange"
           ></el-date-picker>
         </el-col>
 
-        <el-col :span="3">
-          <el-button type="primary" @click="postDateUp">确认</el-button>
-        </el-col>
+      
       </el-row>
     </el-card>
 
     <el-row :gutter="24" class="mb20">
       <el-col :span="24">
         <el-card>
-          <EchartsCoponent
-            :chartData="ClickRate"
-            ref="lineclickRate"
-            ClickRate="name,date,clickCnt"
-            echTitleName="LP点击次数"
+            <EchartsZtorStsa
+            class="mb40"
+            :chartData="clickCntOrPv"
+            ref="lineuv"
+            echTitleName="一周数据"
             line="line"
             uclickName="clickCnt"
           />
         </el-card>
       </el-col>
     </el-row>
- 
+    <el-row :gutter="24" class="mb20">
+      <el-col :span="24">
+        <el-card>
+          <el-table
+            :data="tableList.slice((currentPage - 1) * pageSize,currentPage * pageSize)"
+            border
+            stripe
+          >
+            <el-table-column label="#" type="index"></el-table-column>
+            <el-table-column label="所属页面" prop="name"></el-table-column>
+            <el-table-column label="日期" prop="date" :formatter = "AAswitch"></el-table-column>
+            <el-table-column label="浏览量" prop="pv"></el-table-column>
+            <el-table-column label="访客数" prop="uv"></el-table-column>
+            <el-table-column label="点击次数" prop="clickCnt"></el-table-column>
+            <el-table-column label="点击人数" prop="clickUv"></el-table-column>
+            <el-table-column label="点击率" prop="clickRate" :formatter = "numFilterClickRate"></el-table-column>
+            <el-table-column label="跳失率" prop="bounceRate" :formatter = "numFilterbounceRate"></el-table-column>
+            <el-table-column label="平均停留时长（秒）" prop="avgStayTime"></el-table-column>
+            <el-table-column label="引导下单金额" prop="leOrderAmt"></el-table-column>
+            <el-table-column label="引导下单买家数" prop="leOrderBuyerCnt"></el-table-column>
+            <el-table-column label="引导下单转化率" prop="leOrderRate" :formatter = "numFilterleOrderRate"></el-table-column>
+            <el-table-column label="引导支付金额" prop="lePayAmt"></el-table-column>
+            <el-table-column label="引导支付买家数" prop="lePayBuyerCnt"></el-table-column>
+            <el-table-column label="引导支付转化率" prop="lePayRate" :formatter = "numFilterlePayRate"></el-table-column>
+          </el-table>
+          <!-- 分页区 -->
+          <el-pagination
+            align="left"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[1, 5, 10, 20,100]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="tableList.length"
+          >
+          </el-pagination>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
-import EchartsCoponent from '../Echarts/ech_lpcnt.vue'
+import EchartsZtorStsa from '../Echarts/ech_fksDate.vue'
 import '../../assets/global.css'
 export default {
   data() {
     return {
-      checkList: [],
+    checkListName:"默认首页",
+      checkList:'hp_data',
       pickerOptions: {
         shortcuts: [
           {
@@ -115,7 +163,9 @@ export default {
       ymData: [],
       timeS: [],
       datalist: [],
-      titleName: [],
+      titleName: [{name: "hp_data"},{name: "lp_data"}],
+      titleNameSue:[],
+      userNameList:["访客数","点击人数","点击率","跳失率"],//查询名称
       ClickRate: {}, //点击率
       leOrderRate: {}, //引导下单转化率
       avgStayTime: {}, //平均停留时长
@@ -128,90 +178,94 @@ export default {
     }
   },
   components: {
-    EchartsCoponent,
+    EchartsZtorStsa,
   },
   created() {
+      
     this.onStarClick()
-    this.getListName()
+    this.suyenst()
     this.getMorenList()
   },
   methods: {
-    onStarClick() {
-      //30天数据
+ onStarClick() {
       const end = new Date()
       end.setTime(end.getTime() - 3600 * 1000 * 24)
       const start = new Date()
-      start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
       this.value2 = [start, end]
     },
-    async getListName() {
-      const timeStar = this.$moment(this.value2[0]).format('YYYY-MM-DD')
+  async suyenst(){
+        const timeStar = this.$moment(this.value2[0]).format('YYYY-MM-DD')
       const timeEnd = this.$moment(this.value2[1]).format('YYYY-MM-DD')
+      
       const item = {
+        listName: this.checkList,
         timeStar: timeStar,
         timeEnd: timeEnd,
       }
       const { data: res } = await this.$http.post(
-        'https://shop.123hzj.com/ymlist/lpname',
+        'https://shop.123hzj.com/ymlist/zbname',
         item
       )
       if (res.status !== 0) return this.$message.error(res.message)
-      this.titleName = JSON.parse(JSON.stringify(res.data))
-       res.data.forEach(itemsa => {
-         this.checkList.push(itemsa.name)
-       });
-    },
+        this.titleNameSue = res.data
+  },
     getMorenList() {
       //查询默认七天数据
 
       setTimeout((value) => {
         //点击率
-        const lineclickRate = this.$refs.lineclickRate.$vnode.data
+        const lineclickRate = this.$refs.lineuv.$vnode.data
         this.getSmallData(this.checkList, lineclickRate).then((res) => {
-          this.ClickRate = res
+          this.clickCntOrPv = res
         })
-      },500)
+      })
     },
     async getSmallData(value, refConter) {
       const timeStar = this.$moment(this.value2[0]).format('YYYY-MM-DD')
       const timeEnd = this.$moment(this.value2[1]).format('YYYY-MM-DD')
+      
       const item = {
+        listName: value,
+        firstName:this.checkListName,
         timeStar: timeStar,
         timeEnd: timeEnd,
-        fieldName: refConter.attrs.ClickRate, //查询字段名称
-        checkArr: value,
+        checkArr: this.userNameList,
         type: refConter.attrs.line, //获取图标类型
         titleName: refConter.attrs.echTitleName,
         uclickName: refConter.attrs.uclickName,
       }
       const { data: res } = await this.$http.post(
-        'https://shop.123hzj.com/ymlist/lplist',
+        'https://shop.123hzj.com/ymlist/zbdata',
         item
       )
       if (res.status !== 0) return this.$message.error(res.message)
+        this.tableList = res.list
       return res.data
     },
-    async postDateUp() {
-      this.checkList = []
-      await this.getListName().then(() =>{
-        const lineclickRate = this.$refs.lineclickRate.$vnode.data
-      this.getSmallData(this.checkList, lineclickRate).then((res) => {
-        this.ClickRate = res
-      })
-      })
+   
+    handleCheckedCitiesChange() {
+      //监听check变化
       //点击率
-      
+    this.suyenst()
     },
-    async handleCheckedCitiesChange(value) {
+    handleSChange(){
+       this.suyenst()
+        const lineclickRate = this.$refs.lineuv.$vnode.data
+      this.getSmallData(this.checkList, lineclickRate).then((res) => {
+        this.clickCntOrPv = res
+      })
+    },
+    async handleCheckedNameChange(value) {
       //监听check变化
       //点击率
       if(value != 0){
-      const lineclickRate = this.$refs.lineclickRate.$vnode.data
-      this.getSmallData(value, lineclickRate).then((res) => {
-        this.ClickRate = res
+      const lineclickRate = this.$refs.lineuv.$vnode.data
+      this.getSmallData(this.checkList, lineclickRate).then((res) => {
+        this.clickCntOrPv = res
       })
-         }else{
-       return this.$message.error("请选择人群")
+      }else{
+       return this.$message.error("请选择页面")
     }
     },
     handleSizeChange(val) {
@@ -226,10 +280,27 @@ export default {
         const timeStar = this.$moment(row.date).format('YYYY-MM-DD')
       return timeStar
 },
-numFilter (row) {
+numFilterClickRate (row) {
       let str = Number(row.clickRate * 100).toFixed(2);
       let realVal = parseFloat(str).toFixed(2);
-      
+      realVal += "%";
+      return realVal;
+},
+numFilterbounceRate (row) {
+      let str = Number(row.bounceRate * 100).toFixed(2);
+      let realVal = parseFloat(str).toFixed(2);
+      realVal += "%";
+      return realVal;
+},
+numFilterleOrderRate (row) {
+      let str = Number(row.leOrderRate * 100).toFixed(2);
+      let realVal = parseFloat(str).toFixed(2);
+      realVal += "%";
+      return realVal;
+},
+numFilterlePayRate (row) {
+      let str = Number(row.lePayRate * 100).toFixed(2);
+      let realVal = parseFloat(str).toFixed(2);
       realVal += "%";
       return realVal;
 },
@@ -251,7 +322,6 @@ numFilter (row) {
 </script>
 
 <style lang="less" scoped>
-
 .el-tag {
   margin: 7px;
 }
@@ -274,5 +344,5 @@ numFilter (row) {
 .el-checkbox {
   margin-bottom: 10px;
 }
-
+.boder-b-t{ border-bottom: 1px dotted #d6d6d6; padding-bottom: 10px !important;}
 </style>

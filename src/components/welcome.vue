@@ -5,7 +5,16 @@
       <el-col :span="5">
         <div class="textwel">Dashboard</div>
       </el-col>
-      <el-col :span="5" :offset="14">
+      <el-col :span="4" :offset="10">
+         <el-cascader
+    v-model="valueName"
+    :options="obdoptions"
+    :props="{ expandTrigger: 'hover' }"
+    placeholder="请选择活动"
+    @change="handleChange"></el-cascader>
+      </el-col>
+      <el-col :span="5" :offset="0">
+         
         <el-date-picker
           v-model="value2"
           type="daterange"
@@ -229,6 +238,8 @@ import '../assets/global.css'
 export default {
   data() {
     return {
+      obdoptions:[],
+      valueName:[],
       checkList: [],
       pickerOptions: {
         shortcuts: [
@@ -276,6 +287,7 @@ export default {
       },
       value2: '',
       ymData: [],
+      valueName:[],
       timeS: [],
       quand: {}, //当前周期数据
       qdzf: {}, //涨幅数据
@@ -308,13 +320,20 @@ export default {
     this.getSmallData()
   },
   methods: {
-    onStarClick() {
+   async onStarClick() {
       //7天数据
       const end = new Date()
       end.setTime(end.getTime() - 3600 * 1000 * 24)
       const start = new Date()
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 15)
       this.value2 = [start, end]
+
+//按活动查询
+       const { data: resas } = await this.$http.get(
+        'https://shop.123hzj.com/ymlist/hdsele',
+      )
+      if (resas.status !== 0) return this.$message.error(resas.message)
+      this.obdoptions = resas.options
     },
     async getListName() {
       const timeStar = this.$moment(this.value2[0]).format('YYYY-MM-DD')
@@ -386,7 +405,11 @@ export default {
       //监听日期变化
       this.getListName()
     },
-
+ handleChange(value) {
+   //监听活动变化
+        this.value2 = value[1]
+        this.getListName()
+      },
     doHandleDate() {
       //获取当前年份
       var myDate = new Date()
@@ -592,7 +615,7 @@ export default {
         var item = this.weekGetDate(this.year, a)
         this.csDate.push(item)
       }
-      console.log(this.csDate)
+      //console.log(this.csDate)
     },
     AAswitch(row) {
       const timeStar = this.$moment(row.date).format('YYYY-MM-DD')

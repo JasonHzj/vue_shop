@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import {
   Button, Form, FormItem, Input, Message, Container, Header, Aside, Main, menu, Submenu, MenuItem, Breadcrumb, BreadcrumbItem, Card, Row, Col,
-  Table, TableColumn, Switch, Tooltip, Pagination, Autocomplete, Dialog, MessageBox, Tag, DatePicker, Progress, Notification, CheckboxGroup, Checkbox, Footer, TimeSelect, TimePicker, Icon, Select, Option
+  Table, TableColumn, Switch, Tooltip, Pagination, Autocomplete, Dialog, MessageBox, Tag, DatePicker, Progress, Notification, CheckboxGroup, Checkbox, Footer, TimeSelect, TimePicker, Icon, Select, Option, Cascader, Radio, RadioGroup
 } from 'element-ui'
 
 Vue.use(Button)
@@ -38,6 +38,9 @@ Vue.use(TimePicker)
 Vue.use(Icon)
 Vue.use(Select)
 Vue.use(Option)
+Vue.use(Cascader)
+Vue.use(Radio)
+Vue.use(RadioGroup)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

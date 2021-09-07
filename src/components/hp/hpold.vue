@@ -14,7 +14,7 @@
             <h6>浏览量</h6>
             <h1>{{dqData.pv | thousandBitSeparator}}</h1>
             <span>较前{{timeTs}}日</span>
-            <span><i :class="[dbdata.pv > 0?'el-icon-top':'el-icon-bottom']">{{dbdata.pv * 100 | numFilter}}%</i></span>
+            <span><i :class="[dbdata.pv > 0?'el-icon-caret-top':'el-icon-caret-bottom']">{{dbdata.pv * 100 | numFilter}}%</i></span>
           </div>
         </el-card>
       </el-col>
@@ -24,7 +24,7 @@
             <h6>访客数</h6>
             <h1>{{dqData.uv | thousandBitSeparator}}</h1>
             <span>较前{{timeTs}}日</span>
-            <span><i :class="[dbdata.uv > 0?'el-icon-top':'el-icon-bottom']">{{dbdata.uv * 100 | numFilter}}%</i></span>
+            <span><i :class="[dbdata.uv > 0?'el-icon-caret-top':'el-icon-caret-bottom']">{{dbdata.uv * 100 | numFilter}}%</i></span>
           </div>  
         </el-card>
       </el-col>
@@ -34,7 +34,7 @@
             <h6>点击人数</h6>
            <h1>{{dqData.clickUv | thousandBitSeparator}}</h1>
             <span>较前{{timeTs}}日</span>
-            <span><i :class="[dbdata.clickUv > 0?'el-icon-top':'el-icon-bottom']">{{dbdata.clickUv * 100 | numFilter}}%</i></span>
+            <span><i :class="[dbdata.clickUv > 0?'el-icon-caret-top':'el-icon-caret-bottom']">{{dbdata.clickUv * 100 | numFilter}}%</i></span>
           </div>
            </el-card>
       </el-col>
@@ -44,7 +44,7 @@
             <h6>点击率</h6>
             <h1>{{(dqData.clickUv / dqData.uv)*100 | numFilter}}%</h1>
             <span>较前{{timeTs}}日</span>
-            <span><i :class="[dbdata.clickRate > 0?'el-icon-top':'el-icon-bottom']">{{dbdata.clickRate * 100 | numFilter}}%</i></span>
+            <span><i :class="[dbdata.clickRate > 0?'el-icon-caret-top':'el-icon-caret-bottom']">{{dbdata.clickRate * 100 | numFilter}}%</i></span>
           </div>
         </el-card>
       </el-col>
@@ -52,6 +52,14 @@
     <el-card>
       <!-- 图表 -->
       <el-row class="mb40" :gutter="20">
+        <el-col :span="4">
+         <el-cascader
+    v-model="valueName"
+    :options="obdoptions"
+    :props="{ expandTrigger: 'hover' }"
+    placeholder="请选择活动"
+    @change="handleChange"></el-cascader>
+      </el-col>
         <el-col :span="6">
           <el-date-picker
             v-model="value2"
@@ -87,13 +95,13 @@
 </template>
 
 <script>
-import EchartsCoponent from '../Echarts/ech_date.vue'
-import EchartsSzt from '../Echarts/ech_szt.vue'
 import EchartsZtorSt from '../Echarts/ech_ztorst.vue'
 import '../../assets/global.css'
 export default {
   data() {
     return {
+       obdoptions:[],
+      valueName:[],
       checkList: ['吸顶', 'KV轮播弹窗', '优惠券'],
       pickerOptions: {
         shortcuts: [
@@ -154,8 +162,6 @@ export default {
     }
   },
   components: {
-    EchartsCoponent,
-    EchartsSzt,
     EchartsZtorSt,
   },
   created() {
@@ -170,16 +176,27 @@ export default {
       const start = new Date()
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
       this.value2 = [start, end]
-      console.log(this.value2)
+      //console.log(this.value2)
     },
-    onStarStClick() {
+   async onStarStClick() {
       //30天数据
       const end = new Date()
       end.setTime(end.getTime() - 3600 * 1000 * 24)
       const start = new Date()
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
       this.value2 = [start, end]
+      //按活动查询
+       const { data: resas } = await this.$http.get(
+        'https://shop.123hzj.com/ymlist/hdsele',
+      )
+      if (resas.status !== 0) return this.$message.error(resas.message)
+      this.obdoptions = resas.options
     },
+     handleChange(value) {
+   //监听活动变化
+        this.value2 = value[1]
+        this.getMorenList()
+      },
     getMorenList() {
       //查询默认七天数据
 
@@ -274,10 +291,10 @@ thousandBitSeparator(num){
 .el-checkbox {
   margin-bottom: 10px;
 }
-.el-icon-top{
+.el-icon-caret-top{
   color: #f56c6c;
 }
-.el-icon-bottom{
+.el-icon-caret-bottom{
   color: #67c23a;
 }
 .card_box {

@@ -71,7 +71,7 @@
               label="模块名称"
               prop="moduleEditTitle"
             ></el-table-column>
-            <el-table-column label="点击次数" prop="clickCnt"></el-table-column>
+            <!-- <el-table-column label="点击次数" prop="clickCnt"></el-table-column> -->
             <el-table-column label="点击人数" prop="clickUv"></el-table-column>
             <el-table-column label="点击率" prop="clickRate" :formatter = "numFilter"></el-table-column>
           </el-table>
@@ -81,7 +81,7 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="currentPage"
-            :page-sizes="[1, 5, 10, 20]"
+            :page-sizes="[1, 5, 10, 20,100]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total="tableList.length"
@@ -233,10 +233,14 @@ export default {
     async handleCheckedCitiesChange(value) {
       //监听check变化
       //点击率
+      if(value != 0){
       const lineclickRate = this.$refs.lineclickRate.$vnode.data
       this.getSmallData(value, lineclickRate).then((res) => {
         this.ClickRate = res
       })
+      }else{
+       return this.$message.error("请选择人群")
+    }
     },
     handleSizeChange(val) {
       this.currentPage = 1

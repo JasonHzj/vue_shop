@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      style="width: 100%; height: 500px"
+      style="width: 100%; height: 600px"
       :id="echarts"
       class="echarts"
       ref="echarts"
@@ -14,7 +14,7 @@ import './infographic.js'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { EleResize } from './esresize.js'
 export default {
-  name: 'EchartsZtorSt',
+  name: 'EchartsZtorStsa',
   props: {
     // 接收父组件传递过来的信息
     chartData: {
@@ -142,7 +142,10 @@ export default {
             type: 'value'
           },
           {
-            type: 'value'
+            type: 'value',
+            axisLabel: {
+            formatter: '{value}%'
+          }
           }
         ],
         series: this.chartData.datalist

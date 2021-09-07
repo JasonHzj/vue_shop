@@ -24,6 +24,15 @@
         </el-col>
       </el-row>
       <el-row  :gutter="20">
+  <el-col :span="4">
+         <el-cascader
+    v-model="valueName"
+    :options="obdoptions"
+    :props="{ expandTrigger: 'hover' }"
+    placeholder="请选择活动"
+    @change="handleChange"></el-cascader>
+      </el-col>
+
         <el-col :span="6">
           <el-date-picker
             v-model="value2"
@@ -125,6 +134,8 @@ import '../../assets/global.css'
 export default {
   data () {
     return {
+      obdoptions:[],
+      valueName:[],
       checkList: ['默认首页'],
       pickerOptions: {
         shortcuts: [
@@ -194,13 +205,25 @@ export default {
 
   },
   methods: {
-    onStarClick () {
+   async onStarClick () {
       const end = new Date()
       end.setTime(end.getTime() - 3600 * 1000 * 24)
       const start = new Date()
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
       this.value2 = [start, end]
+      //按活动查询
+       const { data: resas } = await this.$http.get(
+        'https://shop.123hzj.com/ymlist/hdsele',
+      )
+      if (resas.status !== 0) return this.$message.error(resas.message)
+      this.obdoptions = resas.options
     },
+     handleChange(value) {
+   //监听活动变化
+        this.value2 = value[1]
+        this.getListName()
+        this.dispsrsChange()
+      },
     async getListName () {
       const timeStar = this.$moment(this.value2[0]).format('YYYY-MM-DD')
       const timeEnd = this.$moment(this.value2[1]).format('YYYY-MM-DD')
@@ -297,7 +320,8 @@ export default {
     async handleCheckedCitiesChange (value) {
       //监听check变化
       //点击率
-      const lineclickRate = this.$refs.lineclickRate.$vnode.data
+    if(value != 0){
+ const lineclickRate = this.$refs.lineclickRate.$vnode.data
       this.getSmallData(value, lineclickRate).then(res => {
         this.ClickRate = res
       })
@@ -321,6 +345,12 @@ export default {
       this.getSmallData(this.checkList, barAvgUv).then(res => {
         this.avguv = res
       })
+    }else{
+       return this.$message.error("请选择人群")
+    }
+     
+
+
     },
     async dispsrsChange () {
       this.checkList = []
@@ -330,7 +360,6 @@ export default {
           this.checkList.push(item.name)
         });
       })
-     console.log(this.checkList);
     }
   }
 }

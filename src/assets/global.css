@@ -102,6 +102,9 @@ ol {
 .mb10 {
   margin-bottom: 10px;
 }
+.mb15 {
+  margin-bottom: 15px;
+}
 .mb40 {
   margin-bottom: 40px;
 }
@@ -116,3 +119,8 @@ ol {
   padding: 0 !important;
   margin: 0 5px !important;
 }
+
+.el-cascader-panel {
+  height: 600px;
+}
+.el-cascader{ width: 100%;}
