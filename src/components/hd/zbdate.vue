@@ -163,7 +163,7 @@ export default {
       ymData: [],
       timeS: [],
       datalist: [],
-      titleName: [{name: "hp_data"},{name: "lp_data"}],
+      titleName: [{name: "hp_data"},{name: "lp_data"},{name: "qd_data"}],
       titleNameSue:[],
       userNameList:["访客数","点击人数","点击率","跳失率"],//查询名称
       ClickRate: {}, //点击率
